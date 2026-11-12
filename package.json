@@ -55,6 +55,7 @@
     "build": "node ./scripts/sync-version.mjs && pnpm run clean && pnpm run docgen && tsc && rollup -c rollup.config.mjs",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
+    "release:prepare": "node ./scripts/release.mjs",
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
