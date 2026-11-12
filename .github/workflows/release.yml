@@ -12,7 +12,14 @@ permissions:
   contents: read
 
 jobs:
+  verify:
+    # Runs the same verification as the pull request checks, on the exact
+    # commit being published, so that the published package is the one that
+    # was just verified.
+    uses: ./.github/workflows/ci.yml
+
   publish:
+    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -23,12 +30,12 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The pnpm version comes from the `packageManager` field in package.json.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
@@ -52,6 +59,6 @@ jobs:
         run: npm publish --provenance --access public
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
