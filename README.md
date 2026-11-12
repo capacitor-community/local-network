@@ -11,6 +11,19 @@
   <a href="https://www.npmjs.com/package/@capacitor-community/local-network"><img src="https://img.shields.io/npm/v/@capacitor-community/local-network?style=flat-square" /></a>
 </p>
 
+## Requirements
+
+Android 17 (API 37) introduced the `ACCESS_LOCAL_NETWORK` runtime permission, and Android only enforces it against applications that **target API 37 or later**:
+
+| Your application | Local network access |
+| ---------------- | -------------------- |
+| Targets API 37+ | Blocked by default. The permission must be requested at runtime. |
+| Targets API 36 or lower | Granted implicitly. The permission is not enforced. |
+
+The Capacitor 8 application template ships `targetSdkVersion 36`, so with the defaults the permission is not enforced and this plugin reports `granted` without showing a prompt. See [Installation](docs/installation.md) for how to target API 37.
+
+This plugin was extracted from the Capacitor 9 core proposal ([ionic-team/capacitor#8624](https://github.com/ionic-team/capacitor/pull/8624)) at the maintainers' request — see [capacitor-community/proposals#244](https://github.com/capacitor-community/proposals/issues/244).
+
 ## Maintainers
 
 | Maintainer | GitHub | Social |

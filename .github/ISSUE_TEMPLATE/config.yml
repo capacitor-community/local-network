@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Propose a different plugin
+    url: https://github.com/capacitor-community/proposals/issues/new/choose
+    about: |
+      Use this repository's issue tracker for bugs and feature requests of the
+      existing @capacitor-community/local-network plugin. If you need a
+      different plugin altogether, propose it in the capacitor-community
+      proposals repository.

@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Lets the release workflow run exactly this verification before publishing,
+  # so that what is published is what was just verified.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      # The pnpm version comes from the `packageManager` field in package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Plugin
+        run: pnpm run verify
+
+  example-app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Install Plugin Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The example app consumes the plugin through `file:..`, which pnpm
+      # packs at install time. The plugin's type declarations are generated
+      # into `dist/`, so the plugin has to be built before the example app
+      # installs it, otherwise the Angular compiler cannot resolve the
+      # plugin's types.
+      - name: Build Plugin
+        run: pnpm run build
+
+      - name: Install Example App Dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: example-app
+
+      - name: Build Example App
+        run: pnpm run build
+        working-directory: example-app
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+        working-directory: example-app
+
+      - name: Write local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > example-app/android/local.properties
+
+      # Compiling the plugin module from a real application project is the
+      # regression test for the Kotlin version conflict reported in issue #3:
+      # the plugin must compile against whatever Kotlin toolchain the
+      # application provides.
+      - name: Compile Plugin Module
+        run: ./gradlew :capacitor-community-local-network:compileDebugKotlin
+        working-directory: example-app/android
