@@ -20,6 +20,9 @@
   ],
   "author": "Capacitor Community",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/capacitor-community/local-network.git"

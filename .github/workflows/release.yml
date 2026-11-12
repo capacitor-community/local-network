@@ -1,0 +1,57 @@
+name: Release
+
+# Publishing is driven by a version tag: `git tag v<version>` and push it.
+# The tag version must match the `version` field in package.json.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      # Required for npm trusted publishing: npm verifies the workflow identity
+      # with an OIDC token instead of a long-lived publish token. The npm
+      # organization has to list this repository and this workflow file as a
+      # trusted publisher for @capacitor-community/local-network.
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # The pnpm version comes from the `packageManager` field in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+
+      - name: Verify Tag Matches Package Version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${PACKAGE_VERSION}"
+            exit 1
+          fi
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # `prepublishOnly` runs `pnpm run build`, which regenerates the version
+      # files, the `dist/` bundle and the README API tables before publishing.
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
