@@ -37,7 +37,10 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          # Node 24 is required for npm trusted publishing: it bundles npm 11.x,
+          # and npm only performs the OIDC token exchange with npm CLI 11.5.1
+          # or later. Node 22 still bundles npm 10.x.
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
