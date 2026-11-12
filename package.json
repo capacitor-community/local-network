@@ -1,6 +1,6 @@
 {
   "name": "@capacitor-community/local-network",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Capacitor plugin to manage the Android 17+ local network access permission (ACCESS_LOCAL_NETWORK).",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
