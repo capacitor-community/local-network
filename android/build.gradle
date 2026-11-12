@@ -1,5 +1,14 @@
 buildscript {
-    ext.kotlin_version = project.hasProperty("kotlin_version") ? project.property("kotlin_version") : '2.4.21'
+    // Kotlin version used to compile this library.
+    //
+    // IMPORTANT: this must stay in the same minor line as the Kotlin compiler that
+    // ends up compiling these sources, and it must never be NEWER than the one the
+    // consuming application uses. AGP 9.x bundles a Kotlin Gradle Plugin, and the
+    // root project's buildscript classpath takes precedence over this one, so a
+    // newer version declared here is silently ignored and only the artifacts below
+    // leak into the application with a too-new Kotlin metadata version.
+    // See https://github.com/capacitor-community/local-network/issues/3
+    ext.kotlin_version = project.hasProperty("kotlin_version") ? rootProject.ext.kotlin_version : '2.2.20'
     repositories {
         google()
         mavenCentral()
@@ -23,10 +32,12 @@ ext {
 }
 
 apply plugin: 'com.android.library'
+// AGP 9 ships its own built-in Kotlin support, which already registers the
+// `kotlin` extension. Applying the Kotlin Android plugin on top of it is an
+// error, so only apply it when nothing else did.
 if (project.extensions.findByName('kotlin') == null) {
     apply plugin: 'kotlin-android'
 }
-apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 // Generates the kotlinx.serialization serializers for the @Serializable result
 // models. Required for toJSObject() to work at runtime.
@@ -99,8 +110,19 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0"
+
+    // kotlin-stdlib is intentionally NOT declared with an explicit version.
+    // The active Kotlin toolchain (the Kotlin Gradle Plugin, or AGP 9's built-in
+    // Kotlin) injects the stdlib matching the compiler it actually uses. Pinning it
+    // here is what broke applications whose Kotlin compiler was older than this
+    // library's, with "Class 'kotlin.Unit' was compiled with an incompatible
+    // version of Kotlin". See issue #3.
+    //
+    // kotlinx-serialization carries Kotlin metadata of the version it was built
+    // with: 1.9.x ships Kotlin 2.1 metadata, readable by every Kotlin compiler
+    // from 2.0 onwards. Do not bump it without checking the metadata version it
+    // was built against.
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
