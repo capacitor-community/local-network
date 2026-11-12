@@ -53,6 +53,14 @@ jobs:
       - name: Install Plugin Dependencies
         run: pnpm install --frozen-lockfile
 
+      # The example app consumes the plugin through `file:..`, which pnpm
+      # packs at install time. The plugin's type declarations are generated
+      # into `dist/`, so the plugin has to be built before the example app
+      # installs it, otherwise the Angular compiler cannot resolve the
+      # plugin's types.
+      - name: Build Plugin
+        run: pnpm run build
+
       - name: Install Example App Dependencies
         run: pnpm install --frozen-lockfile
         working-directory: example-app
