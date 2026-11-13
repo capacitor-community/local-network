@@ -7,7 +7,10 @@
 
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2026?style=flat-square" />
+  <a href="https://github.com/capacitor-community/local-network/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/actions/workflow/status/capacitor-community/local-network/ci.yml?branch=main&style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/local-network"><img src="https://img.shields.io/npm/l/@capacitor-community/local-network?style=flat-square" /></a>
+<br>
+  <a href="https://www.npmjs.com/package/@capacitor-community/local-network"><img src="https://img.shields.io/npm/dw/@capacitor-community/local-network?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/local-network"><img src="https://img.shields.io/npm/v/@capacitor-community/local-network?style=flat-square" /></a>
 </p>
 
@@ -26,9 +29,12 @@ This plugin was extracted from the Capacitor 9 core proposal ([ionic-team/capaci
 
 ## Maintainers
 
-| Maintainer | GitHub | Social |
-| -----------| -------| -------|
-| Capacitor Community | [capacitor-community](https://github.com/capacitor-community) | |
+| Maintainer          | GitHub                                              | Social | Website                                                    |
+| ------------------- | --------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| Fabio Martino       | [fabiomartino](https://github.com/fabiomartino)     | —      | [LinkedIn](https://www.linkedin.com/in/fabio-m-b1572598/)  |
+| Capacitor Community | [capacitor-community](https://github.com/capacitor-community) | — | [capacitorjs.com](https://capacitorjs.com)                 |
+
+Maintenance Status: Actively Maintained
 
 ## Documentation
 
