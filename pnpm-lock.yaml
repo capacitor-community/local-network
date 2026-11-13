@@ -162,6 +162,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@capacitor/docgen@0.3.1': 28b3a5d0e5def33e8248c7d63b50ac35f27da36b365774c5c445d40847a411db
+
 importers:
 
   .:
@@ -177,7 +180,7 @@ importers:
         version: 8.5.3
       '@capacitor/docgen':
         specifier: ^0.3.1
-        version: 0.3.1
+        version: 0.3.1(patch_hash=28b3a5d0e5def33e8248c7d63b50ac35f27da36b365774c5c445d40847a411db)
       '@capacitor/ios':
         specifier: ^8.0.0
         version: 8.5.3(@capacitor/core@8.5.3)
@@ -1795,7 +1798,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@capacitor/docgen@0.3.1':
+  '@capacitor/docgen@0.3.1(patch_hash=28b3a5d0e5def33e8248c7d63b50ac35f27da36b365774c5c445d40847a411db)':
     dependencies:
       colorette: 2.0.20
       github-slugger: 1.5.0

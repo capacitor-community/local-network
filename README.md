@@ -29,10 +29,10 @@ This plugin was extracted from the Capacitor 9 core proposal ([ionic-team/capaci
 
 ## Maintainers
 
-| Maintainer          | GitHub                                              | Social | Website                                                    |
-| ------------------- | --------------------------------------------------- | ------ | ---------------------------------------------------------- |
-| Fabio Martino       | [fabiomartino](https://github.com/fabiomartino)     | —      | [LinkedIn](https://www.linkedin.com/in/fabio-m-b1572598/)  |
-| Capacitor Community | [capacitor-community](https://github.com/capacitor-community) | — | [capacitorjs.com](https://capacitorjs.com)                 |
+| Maintainer          | GitHub                                              | Social | Website                                            |
+| ------------------- | --------------------------------------------------- | ------ | -------------------------------------------------- |
+| Fabio Martino       | [fabiomartino](https://github.com/fabiomartino)     | —      | —                                                  |
+| Capacitor Community | [capacitor-community](https://github.com/capacitor-community) | — | [capacitorjs.com](https://capacitorjs.com)         |
 
 Maintenance Status: Actively Maintained
 

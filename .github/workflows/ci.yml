@@ -42,6 +42,20 @@ jobs:
       - name: Verify Plugin
         run: pnpm run verify
 
+      # The README and src/version.ts are generated from package.json and from
+      # the JSDoc in src/definitions.ts. The build regenerates them, so a
+      # change that leaves them out of sync would be silently overwritten by
+      # the next build instead of being caught here.
+      - name: Verify the Generated Files Are Up To Date
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::The build changed files that are not in sync with the sources."
+            echo "Run 'pnpm run build' locally and commit the result."
+            git status --porcelain
+            git diff
+            exit 1
+          fi
+
   example-app:
     runs-on: ubuntu-latest
     timeout-minutes: 30

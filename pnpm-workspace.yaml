@@ -1,3 +1,6 @@
+patchedDependencies:
+  '@capacitor/docgen@0.3.1': patches/@capacitor+docgen+0.3.1.patch
+
 allowBuilds:
   swiftlint: true
   unrs-resolver: true
