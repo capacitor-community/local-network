@@ -1,0 +1,43 @@
+diff --git a/dist/parse.js b/dist/parse.js
+index 8e863fb..7315b78 100644
+--- a/dist/parse.js
++++ b/dist/parse.js
+@@ -17,7 +17,19 @@ const formatting_1 = require("./formatting");
+ function parse(opts) {
+     const tsProgram = transpile_1.getTsProgram(opts);
+     const typeChecker = tsProgram.getTypeChecker();
+-    const tsSourceFiles = tsProgram.getSourceFiles();
++    const tsSourceFiles = tsProgram.getSourceFiles().filter((sourceFile) => {
++        const fileName = sourceFile.fileName;
++        // Excludes the TypeScript standard library files (lib.dom.d.ts, lib.es2017.d.ts, ...)
++        if (fileName.includes('/typescript/lib/lib.') || fileName.includes('\\typescript\\lib\\lib.')) {
++            return false;
++        }
++        // Excludes node_modules except the @capacitor packages
++        if ((fileName.includes('/node_modules/') || fileName.includes('\\node_modules\\')) &&
++            !fileName.includes('/@capacitor/') && !fileName.includes('\\@capacitor\\')) {
++            return false;
++        }
++        return true;
++    });
+     const interfaces = [];
+     const enums = [];
+     const typeAliases = [];
+diff --git a/dist/transpile.js b/dist/transpile.js
+index 8c013c0..11822e1 100644
+--- a/dist/transpile.js
++++ b/dist/transpile.js
+@@ -21,6 +21,13 @@ function getTsProgram(opts) {
+             return path_1.default.join(tsconfigDir, f);
+         });
+         options = configResult.config.compilerOptions;
++        // TypeScript normalizes the short lib names ("dom" -> "lib.dom.d.ts") while parsing a
++        // tsconfig, but these options are handed to createProgram raw. Without this the standard
++        // library is never loaded, every type that depends on a global (Promise, Array, ...) is
++        // resolved as "any", and the generated documentation loses the real return types.
++        if (options.lib) {
++            options.lib = options.lib.map((lib) => (lib.startsWith('lib.') ? lib : `lib.${lib}.d.ts`));
++        }
+     }
+     else if (Array.isArray(opts.inputFiles) && opts.inputFiles.length > 0) {
+         opts.inputFiles.forEach((i) => {
